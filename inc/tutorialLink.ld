@@ -23,6 +23,10 @@ SECTIONS
 	{
 		*(vectors)				/* Place vector table at this point in the section. */
 		*(.text)				/* Place program code at this point in the section. */
+	}
+
+	.rodata :
+	{
 		*(.rodata)
 	}
 

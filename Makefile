@@ -13,14 +13,13 @@ ASFLAGS		+= -Wall -g
 CFLAGS		+= $(CPU) 
 CFLAGS		+= $(INC)
 CFLAGS		+= -Wall -g
-CFLAGS		+= -ffunction-sections -fdata-sections
+#CFLAGS		+= -ffunction-sections -fdata-sections
 
 GXXFLAGS	+= $(CPU)
 GXXFLAGS	+= $(INC)
 GXXFLAGS	+= -Wall -g
 
-CFLAGS		+= -flto -ffreestanding
-CFLAGS		+= -lc -nostdlib -nostdinc
+LDFLAGS		+= -nostdlib -nostdinc
 
 TARGET		= program
 
@@ -59,7 +58,7 @@ $(BINDIR)/$(TARGET).bin: $(BINDIR)/$(TARGET).elf
 	$(OC) -O binary $< $@
 
 $(BINDIR)/$(TARGET).elf: $(OBJ)
-	$(LD) $(LDSCRIPT) $^ -o $@
+	$(LD) $(LDSCRIPT) $(LDFLAGS) $^ -o $@
 	$(SZ) $@
 	
 $(OBJDIR)/%.$(OBJEXT): $(SRCDIR)/%.cpp
