@@ -1,0 +1,166 @@
+
+Discarded input sections
+
+ .group         0x00000000        0xc obj/blinker.o
+ .group         0x00000000        0xc obj/blinker.o
+ .group         0x00000000        0xc obj/startup.o
+ .group         0x00000000        0xc obj/startup.o
+ .debug_macro   0x00000000      0xa60 obj/startup.o
+ .debug_macro   0x00000000      0x10c obj/startup.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x00000000         0x00040000         xr
+RAM              0x20000000         0x00004000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD c:/program files (x86)/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/8.2.1\libgcc.a
+LOAD obj/blinker.o
+LOAD obj/startup.o
+
+.text           0x00000000      0x3c4
+ *(.vectors)
+ .vectors       0x00000000       0xc0 obj/startup.o
+                0x00000000                __vectors
+ *(.text*)
+ .text          0x000000c0      0x148 obj/blinker.o
+                0x000000c0                delay
+                0x000000ea                show
+                0x00000134                myShow
+                0x00000168                myShow1
+                0x000001b8                init
+ .text          0x00000208      0x1a4 obj/startup.o
+                0x00000208                null
+                0x00000208                phos_init
+                0x00000208                phos_start
+                0x00000212                __reset
+                0x00000288                set_priority
+                0x00000338                default_handler
+                0x00000338                spin
+                0x0000039c                swi4_handler
+                0x0000039c                timer2_handler
+                0x0000039c                timer1_handler
+                0x0000039c                rtc0_handler
+                0x0000039c                swi5_handler
+                0x0000039c                svc_handler
+                0x0000039c                swi0_handler
+                0x0000039c                timer0_handler
+                0x0000039c                swi1_handler
+                0x0000039c                qdec_handler
+                0x0000039c                spi0_twi0_handler
+                0x0000039c                rng_handler
+                0x0000039c                temp_handler
+                0x0000039c                power_clock_handler
+                0x0000039c                gpiote_handler
+                0x0000039c                systick_handler
+                0x0000039c                swi2_handler
+                0x0000039c                ccm_aar_handler
+                0x0000039c                pendsv_handler
+                0x0000039c                rtc1_handler
+                0x0000039c                swi3_handler
+                0x0000039c                spi1_twi1_handler
+                0x0000039c                radio_handler
+                0x0000039c                adc_handler
+                0x0000039c                hardfault_handler
+                0x0000039c                uart_handler
+                0x0000039c                nmi_handler
+                0x0000039c                lpcomp_handler
+                0x0000039c                wdt_handler
+                0x0000039c                ecb_handler
+ *(.rodata*)
+ .rodata        0x000003ac       0x18 obj/blinker.o
+                0x000003c4                . = ALIGN (0x4)
+                0x000003c4                __etext = .
+
+.glue_7         0x000003c4        0x0
+ .glue_7        0x000003c4        0x0 linker stubs
+
+.glue_7t        0x000003c4        0x0
+ .glue_7t       0x000003c4        0x0 linker stubs
+
+.vfp11_veneer   0x000003c4        0x0
+ .vfp11_veneer  0x000003c4        0x0 linker stubs
+
+.v4_bx          0x000003c4        0x0
+ .v4_bx         0x000003c4        0x0 linker stubs
+
+.iplt           0x000003c4        0x0
+ .iplt          0x000003c4        0x0 obj/blinker.o
+
+.rel.dyn        0x000003c4        0x0
+ .rel.iplt      0x000003c4        0x0 obj/blinker.o
+
+.data           0x20000000        0x8 load address 0x000003c4
+                0x20000000                __data_start = .
+ *(.data*)
+ .data          0x20000000        0x8 obj/blinker.o
+                0x20000004                mymask
+ .data          0x20000008        0x0 obj/startup.o
+                0x20000008                . = ALIGN (0x4)
+                0x20000008                __data_end = .
+
+.igot.plt       0x20000008        0x0 load address 0x000003cc
+ .igot.plt      0x20000008        0x0 obj/blinker.o
+
+.bss            0x20000008        0x4 load address 0x000003cc
+                0x20000008                __bss_start = .
+ *(.bss*)
+ .bss           0x20000008        0x4 obj/blinker.o
+ .bss           0x2000000c        0x0 obj/startup.o
+ *(COMMMON)
+                0x2000000c                . = ALIGN (0x4)
+                0x2000000c                __bss_end = .
+                0x2000000c                __end = .
+                0x20004000                __stack = (ORIGIN (RAM) + LENGTH (RAM))
+                0x20003800                __stack_limit = (__stack - 0x800)
+                0x00000001                ASSERT ((__stack_limit >= __end), Region RAM overlacks with stack.)
+OUTPUT(bin/program.elf elf32-littlearm)
+
+.debug_info     0x00000000      0x345
+ .debug_info    0x00000000      0x1d1 obj/blinker.o
+ .debug_info    0x000001d1      0x174 obj/startup.o
+
+.debug_abbrev   0x00000000      0x225
+ .debug_abbrev  0x00000000       0xff obj/blinker.o
+ .debug_abbrev  0x000000ff      0x126 obj/startup.o
+
+.debug_aranges  0x00000000       0x40
+ .debug_aranges
+                0x00000000       0x20 obj/blinker.o
+ .debug_aranges
+                0x00000020       0x20 obj/startup.o
+
+.debug_macro    0x00000000      0xba6
+ .debug_macro   0x00000000       0x20 obj/blinker.o
+ .debug_macro   0x00000020      0xa60 obj/blinker.o
+ .debug_macro   0x00000a80      0x10c obj/blinker.o
+ .debug_macro   0x00000b8c       0x1a obj/startup.o
+
+.debug_line     0x00000000      0x251
+ .debug_line    0x00000000      0x120 obj/blinker.o
+ .debug_line    0x00000120      0x131 obj/startup.o
+
+.debug_str      0x00000000     0x31d0
+ .debug_str     0x00000000     0x3141 obj/blinker.o
+                               0x314e (size before relaxing)
+ .debug_str     0x00003141       0x8f obj/startup.o
+                               0x3186 (size before relaxing)
+
+.comment        0x00000000       0x75
+ .comment       0x00000000       0x75 obj/blinker.o
+                                 0x76 (size before relaxing)
+ .comment       0x00000075       0x76 obj/startup.o
+
+.ARM.attributes
+                0x00000000       0x2b
+ .ARM.attributes
+                0x00000000       0x2b obj/blinker.o
+ .ARM.attributes
+                0x0000002b       0x2b obj/startup.o
+
+.debug_frame    0x00000000      0x154
+ .debug_frame   0x00000000       0xac obj/blinker.o
+ .debug_frame   0x000000ac       0xa8 obj/startup.o

@@ -6,20 +6,39 @@ OD			= arm-none-eabi-objdump
 LD			= arm-none-eabi-ld
 SZ			= arm-none-eabi-size
 
+COMMON		= -Wall -g
 CPU			= -mcpu=cortex-m0 -mthumb
+ARC			= -march=armv6-m
+OPT 		+= -g3
+#OPT		+= -O3
 
-ASFLAGS		+= -Wall -g
+ASFLAGS		+= $(COMMON)
+ASFLAGS		+= $(CPU)
+ASFLAGS		+= $(ARC)
+ASFLAGS		+= $(OPT)
 
+CFLAGS		+= $(COMMON)
 CFLAGS		+= $(CPU) 
+CFLAGS		+= $(ARC)
+CFLAGS		+= $(OPT)
 CFLAGS		+= $(INC)
-CFLAGS		+= -Wall -g
+CFLAGS 		+= -mfloat-abi=soft
 #CFLAGS		+= -ffunction-sections -fdata-sections
 
+GXXFLAGS	+= $(COMMON)
 GXXFLAGS	+= $(CPU)
 GXXFLAGS	+= $(INC)
-GXXFLAGS	+= -Wall -g
 
-LDFLAGS		+= -nostdlib -nostdinc
+LDFLAGS		+= -lgcc -nostdlib
+LDFLAGS		+= -O -g -Wall
+
+# Some of the linker flags below must be passed to gcc rather than ld.
+
+#LDFLAGS += -Xlinker -Map=$(TARGETDIR)/$(TARGET).map
+#LDFLAGS += -mthumb -mabi=aapcs
+#LDFLAGS += -mcpu=cortex-m0
+#LDFLAGS += --specs=nano.specs -lc -lnosys
+#LDFLAGS += -Wl,--gc-sections
 
 TARGET		= program
 
@@ -33,17 +52,26 @@ SRCEXT		= c
 
 INC			= -I$(INCDIR)
 
-SOURCES		= $(shell find $(SRCDIR) -type f -name *.c)
+SOURCES		:= src/blinker.c
+SOURCES		+= $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 
-OBJ			+= $(patsubst $(SRCDIR)/%, $(OBJDIR)/%, $(SOURCES:$(SRCEXT)=$(OBJEXT)))
-OBJ			+= $(patsubst $(SRCDIR)/%, $(OBJDIR)/%, $(SOURCES:$(SRCEXT)=$(OBJEXT)))
 
-LDSCRIPT	= -T$(INCDIR)/tutorialLink.ld
+OBJ			:= $(patsubst $(SRCDIR)/%, $(OBJDIR)/%, $(SOURCES:$(SRCEXT)=$(OBJEXT)))
+#OBJ			+= $(patsubst $(SRCDIR)/%, $(OBJDIR)/%, $(SOURCES:$(SRCEXT)=$(OBJEXT)))
 
-all: directories $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGET).hex
+LDSCRIPT	= -Tsrc/tutorialLink.ld
+
+all: directories $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGET).hex run .debug
+
+run:
+	@cp $(BINDIR)/$(TARGET).hex E:/
+	
+.debug: $(BINDIR)/$(TARGET).debug
+
 
 debug:
-	@echo $(OBJ)
+	@echo "SOURCES: " $(SOURCES)
+	@echo "OBJ: " $(OBJ)
 
 directories:
 	@mkdir -p $(BINDIR)
@@ -56,10 +84,16 @@ $(BINDIR)/$(TARGET).hex: $(BINDIR)/$(TARGET).elf
 	
 $(BINDIR)/$(TARGET).bin: $(BINDIR)/$(TARGET).elf
 	$(OC) -O binary $< $@
+	
+$(BINDIR)/$(TARGET).debug: $(BINDIR)/$(TARGET).elf
+	$(OC) --only-keep-debug $< $@
+
+#$(BINDIR)/$(TARGET).elf: $(OBJ)
+#	$(LD) $(LDSCRIPT) $(LDFLAGS) $^ -o $@
+#	$(SZ) $@
 
 $(BINDIR)/$(TARGET).elf: $(OBJ)
-	$(LD) $(LDSCRIPT) $(LDFLAGS) $^ -o $@
-	$(SZ) $@
+	$(CC) $(LDSCRIPT) $(LDFLAGS) $^ -o $@ -Wl,-Map,$(BINDIR)/$(TARGET).map
 	
 $(OBJDIR)/%.$(OBJEXT): $(SRCDIR)/%.cpp
 	$(GXX) $(GXXFLAGS) -c $^ -o $@
